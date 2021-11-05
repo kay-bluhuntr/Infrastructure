@@ -1,0 +1,12 @@
+[
+
+  {
+    "ParameterKey": "RoleName",
+    "ParameterValue": "comparethelocation_role"
+  },
+
+  {
+    "ParameterKey": "ec2Profile",
+    "ParameterValue": "comparethelocation_ec2_profile"
+  }
+]

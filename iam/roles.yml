@@ -1,0 +1,53 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Iam Roles to be used for the EC2 Instance as well as SSM and S3 Services."
+
+######Parameters called by the script ########
+Parameters:
+  RoleName:
+    Type: String
+    Description: "Name of Role"
+
+  ec2Profile:
+    Type: String
+    Description: "EC2 Profile"
+
+##########################
+# Resources Definition
+##########################
+Resources:
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      Path: "/"
+
+  ec2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref InstanceRole
+      InstanceProfileName: !Ref ec2Profile
+
+
+#########################################
+# Output 
+#########################################
+
+Outputs:
+  ec2InstanceProfileArn:
+    Value: !GetAtt ec2InstanceProfile.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ec2InstanceArn"      
